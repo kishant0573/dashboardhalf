@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Assisted Hindi Speech to English Text System </title>
+    <style>
+        /* Your CSS and other styles */
+        .audio audio {
+    width: 100%;
+    max-width: 300px; /* Adjust the maximum width as needed */
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    margin-bottom: 10px;
+}
+
+.audio button {
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.audio button:hover {
+    background-color: #45a049;
+}
+   #password{
+    margin-left: 40%;
+    margin-top:1%;
+    justify-content: center;
+    text-align: center;
+   }
+        #password,
+        #saveButton {
+            margin-bottom: 20px;
+            justify-content: space-between;
+            display: flex;
+        }
+
+        #saveButton {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display:flex;
+            justify-content: space-between;
+            margin-left: 41%;
+        }
+
+        #saveButton:hover {
+            background-color: #45a049;
+            margin-right:20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+       h1{
+        text-align: center;
+        justify-content: centre;
+
+        }
+        #pass{
+            margin-left: 40%;
+            margin-top: 1%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Assisted Hindi Speech to English Text System </h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>DURATION OF SENTENCE</th>
+                <th>HINDI AUDIO FILES</th>
+                <th>POSSIBLE HINDI ASR SOLUTIONS</th>
+                <th>POSSIBLE HINDI ASR SOLUTIONS IN TRANSLITERATION LETTERS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION</th>
+                <th>CONVERTED TEXT FROM TRANSLITERATION TO HINDI</th>
+                <th>BUTTON TO RUN PUNCTUATION MODELS </th>
+                <th>PUNCTUATION MODELS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION POST PUNCTUATION</th>
+                <th>TRANSLITERATION FROM LEFT BOX</th>
+                <th>TRANSLITERATION FROM LEFT BOX</th>
+                <th>BUTTON TO RUN MACHINE TRANSLATION MODELS</th>
+                <th>POSSIBLE HINDI TO ENGLISH MT SOLUTIONS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION_MT</th>
+                <th>BUTTON TO RUN PUNCTUATION MODELS 2</th>
+                <th>PUNCTUATION MODELS 2</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION POST PUNCTUATION 2</th>
+                <th>BUTTON FOR RUN TTS 2</th>
+                <th>ORITIGNAL HINDI AUDIO </th>
+                <th>FINAL HINDI TEXT </th>
+                <th>TRANSLITERATIO OF FINAL HINDI TEXT </th>
+                <th>FINAL ENGLISH TEXT </th>
+                <th>DROP DOWN BOX OF KIND OF SENTENCE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="duration1">Sample Duration 1</td>
+               
+                 <td class="audio">
+                    <input type="file" accept="audio/*" id="audioFile1" onchange="loadAudio(this)">
+                    <audio controls id="audioPlayer1">
+                        <source src="m.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                        <button onclick="playAudio()"></button>
+                    </audio>
+                    <!-- <audio controls id="audioPlayer1">
+                        <source src="m.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <button onclick="playAudio()">Play</button>
+                     -->
+                    
+                    
+                </td>
+                
+                
+                
+                <!-- </td> -->
+                <td> <select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                        <!-- Add options as needed -->
+                        <option value="Option 1">Option 1</option>
+                        <option value="Option 2">Option 2</option>
+                        <option value="Option 3">Option 3</option>
+                    </select></td>
+                <td>Transliteration Solutions 1</td>
+                <td><input type="text" placeholder="Manual Correction" /></td>
+                <td>Converted Text 1</td>
+                <td><button onclick="runPunctuationModels('textArea1')">Run</button></td>
+                <td>Punctuation Models 1</td>
+                <td><input type="text" placeholder="Manual Correction Post Punctuation" /></td>
+                <td>Transliteration 1</td>
+                <td>Transliteration 1</td>
+                <td><button onclick="runMTModels('textAreaMT1')">Run</button></td>
+                <td>MT Solutions 1</td>
+                <td><input type="text" placeholder="Manual Correction MT" /></td>
+                <td><button onclick="runPunctuationModels2('textArea2')">Run</button></td>
+                <td>Punctuation Models 2</td>
+                <td><input type="text" placeholder="Manual Correction Post Punctuation 2" /></td>
+                <td><button onclick="runTTS2()">Run</button></td>
+                <td class="audio">
+                    <input type="file" accept="audio/*" id="audioFile1"
+                        onchange="updateDuration('audioFile1', 'duration1')" />
+                    <audio controls id="audioPlayer1">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <button onclick="playAudio('audioFile1', 'audioPlayer1')">Play</button>
+                </td>
+                <td><input type="text" placeholder="Manual Correction" /></td>
+                <td>Transliteration Solutions 1</td>
+                <td>Transliteration Solutions 1</td>
+                <td><select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                        
+                        <option value="Option 1">Option 1</option>
+                        <option value="Option 2">Option 2</option>
+                        <option value="Option 3">Option 3</option>
+                    </select></td>
+            
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <input type="password" id="password" placeholder="Enter your password">
+
+    <button  id="saveButton" onclick="saveDataToExcel()">Save to database</button>
+
+    <script>
+function saveDataToExcel() {
+   
+    const enteredPassword = document.getElementById('password').value; // Retrieve the password value
+
+    if (enteredPassword === "12345") {
+        const asrSolutionsDropdown = document.getElementById('asrSolution1');
+        const selectedValue = asrSolutionsDropdown.value;
+        const inputElement = document.getElementById('audioFile1');
+        const duration = document.getElementById('duration1').textContent;
+
+        const selectedFile = inputElement.files[0];
+        // Create a FormData object to send the data to the server
+        const formData = new FormData();
+        formData.append('asr_solutions', selectedValue);
+        formData.append('duration', duration);
+
+        // formData.append('audio_files', selectedFile);
+
+        // Send the form data to the server
+        fetch('/convert', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Data saved to Excel file!');
+            } else {
+                alert('Error saving data.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error occurred while saving data.');
+        });
+    } else {
+        alert("Password incorrect. Data not saved.");
+    }
+}
+
+
+       
+        function updateDuration(fileInputId, durationId) {
+        const fileInput = document.getElementById(fileInputId);
+        const durationElement = document.getElementById(durationId);
+
+        const file = fileInput.files[0];
+        if (file) {
+            const objectURL = URL.createObjectURL(file);
+            const audioTemp = new Audio(objectURL);
+            audioTemp.addEventListener('loadedmetadata', function () {
+                const duration = audioTemp.duration.toFixed(2); // Duration in seconds
+                durationElement.textContent = `${duration} seconds`;
+            });
+        }
+    }
+    function loadAudio(input) {
+    const file = input.files[0];
+    const audioPlayer = document.getElementById('audioPlayer1');
+    const durationElement = document.getElementById('duration1');
+
+    if (file) {
+        const objectURL = URL.createObjectURL(file);
+        audioPlayer.src = objectURL;
+        audioPlayer.load();
+
+        const audioTemp = new Audio(objectURL);
+        audioTemp.addEventListener('loadedmetadata', function () {
+            const duration = audioTemp.duration.toFixed(2); // Duration in seconds
+            durationElement.textContent = ` ${duration} seconds`;
+        });
+    }
+
+}
+
+
+// function playAudio() {
+//     const audioPlayer = document.getElementById('audioPlayer1');
+
+//     if (audioPlayer.paused) {
+//         audioPlayer.play();
+//     } else {
+//         audioPlayer.pause();
+//     }
+// }
+
+function playAudio() {
+    const audioPlayer = document.getElementById('audioPlayer1');
+
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+    } else {
+        audioPlayer.pause();
+    }
+}
+
+// This function will be triggered when the page loads
+// window.onload = function() {
+//     playAudio(); // Auto-start playback when the page loads
+// };
+
+
+     
+  
+
+
+        function runPunctuationModels(textAreaId) {
+            // Implement logic to run punctuation models for the given text area
+            const textArea = document.getElementById(textAreaId);
+            // Your logic here...
+        }
+
+        function runMTModels(textAreaMTId) {
+            // Implement logic to run machine translation models for the given text area
+            const textAreaMT = document.getElementById(textAreaMTId);
+            // Your logic here...
+        }
+
+        function runPunctuationModels2(textAreaId) {
+            // Implement logic to run punctuation models for the given text area
+            const textArea = document.getElementById(textAreaId);
+            // Your logic here...
+        }
+
+        function runTTS2() {
+            // Implement logic to run text-to-speech models for the second button
+            // Your logic here...
+        }
+        function handleASRSolutionSelection(dropdownId) {
+            // Implement logic to handle the selection of the ASR solution
+            const dropdown = document.getElementById(dropdownId);
+            const selectedOption = dropdown.options[dropdown.selectedIndex].value;
+
+            // Your logic here...
+            console.log('Selected ASR Solution:', selectedOption);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('saveButton').addEventListener('click', function() {
+                saveDataToExcel(); // Call the function to save data when the button is clicked
+
+        
+            });
+        });
+    </script>
+</body>
+</html>

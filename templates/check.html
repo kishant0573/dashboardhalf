@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>AI Assisted Hindi Speech to English Text System </title>
     <style>
+        #page1 input[type="submit"]{
+            margin-left:42% ;
+           cursor: pointer;
+           border-radius: 2px;
+           font-weight: bold;
+        }
         /* Your CSS and other styles */
         .audio audio {
     width: 100%;
@@ -185,6 +191,11 @@
     <input type="password" id="password" placeholder="Enter your password">
 
     <button  id="saveButton" onclick="saveDataToExcel()">Save to database</button>
+    <form action="/oktoopen" id="page1" method="post">
+        <input type="hidden" name="oktoopen" value="page1">
+        <input type="submit" value="Open Page">
+    </form>
+    
 
     <script>
 function saveDataToExcel() {

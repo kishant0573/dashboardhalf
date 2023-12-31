@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Assisted Hindi Speech to English Text System</title>
+    <!-- Your CSS styles -->
+    <style>
+        <style>
+    /* Your existing CSS styles */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #000; /* Add border to the entire table */
+    }
+
+    th, td {
+        border: 1px solid #000; /* Add border to cells */
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+    </style>
+</head>
+<body>
+    <h1>AI Assisted Hindi Speech to English Text System</h1>
+
+    <table id="audioTable">
+       
+        <thead>
+            <!-- ... -->
+            <tr>
+                <th>DURATION OF SENTENCE</th>
+                <th>HINDI AUDIO FILES</th>
+                <th>POSSIBLE HINDI ASR SOLUTIONS</th>
+                <th>POSSIBLE HINDI ASR SOLUTIONS IN TRANSLITERATION LETTERS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION</th>
+                <th>CONVERTED TEXT FROM TRANSLITERATION TO HINDI</th>
+                <th>BUTTON TO RUN PUNCTUATION MODELS </th>
+                <th>PUNCTUATION MODELS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION POST PUNCTUATION</th>
+                <th>TRANSLITERATION FROM LEFT BOX</th>
+                <th>TRANSLITERATION FROM LEFT BOX</th>
+                <th>BUTTON TO RUN MACHINE TRANSLATION MODELS</th>
+                <th>POSSIBLE HINDI TO ENGLISH MT SOLUTIONS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION_MT</th>
+                <th>BUTTON TO RUN PUNCTUATION MODELS 2</th>
+                <th>PUNCTUATION MODELS 2</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION POST PUNCTUATION 2</th>
+                <th>BUTTON FOR RUN TTS 2</th>
+                <th>ORITIGNAL HINDI AUDIO </th>
+                <th>FINAL HINDI TEXT </th>
+                <th>TRANSLITERATIO OF FINAL HINDI TEXT </th>
+                <th>FINAL ENGLISH TEXT </th>
+                <th>DROP DOWN BOX OF KIND OF SENTENCE</th>
+            </tr>
+        </thead>
+        <tbody id="audioTableBody">
+            <tr>
+                <td id="duration1" class="duration">Sample Duration 1</td>
+               
+                 <td >
+                    <audio id="myAudio1" controls>
+                        <source src="{{ url_for('static', filename='m.mp3') }}" type="audio/mp3">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                </td>
+                
+
+                <td> <select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                        <!-- Add options as needed -->
+                        <option value="Option 1">Option 1</option>
+                        <option value="Option 2">Option 2</option>
+                        <option value="Option 3">Option 3</option>
+                    </select></td>
+                <td>Transliteration Solutions 1</td>
+                <td><input type="text" placeholder="Manual Correction" /></td>
+                <td>Converted Text 1</td>
+                <td><button onclick="runPunctuationModels('textArea1')">Run</button></td>
+                <td>Punctuation Models 1</td>
+                <td><input type="text" placeholder="Manual Correction Post Punctuation" /></td>
+                <td>Transliteration 1</td>
+                <td>Transliteration 1</td>
+                <td><button onclick="runMTModels('textAreaMT1')">Run</button></td>
+                <td>MT Solutions 1</td>
+                <td><input type="text" placeholder="Manual Correction MT" /></td>
+                <td><button onclick="runPunctuationModels2('textArea2')">Run</button></td>
+                <td>Punctuation Models 2</td>
+                <td><input type="text" placeholder="Manual Correction Post Punctuation 2" /></td>
+                <td><button onclick="runTTS2()">Run</button></td>
+                <td class="audio">
+                    <input type="file" accept="audio/*" id="audioFile1"
+                        onchange="updateDuration('audioFile1', 'duration1')" />
+                    <audio controls id="audioPlayer1">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <button onclick="playAudio('audioFile1', 'audioPlayer1')">Play</button>
+                </td>
+                <td><input type="text" placeholder="Manual Correction" /></td>
+                <td>Transliteration Solutions 1</td>
+                <td>Transliteration Solutions 1</td>
+                <td><select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                        
+                        <option value="Option 1">Option 1</option>
+                        <option value="Option 2">Option 2</option>
+                        <option value="Option 3">Option 3</option>
+                    </select></td>
+            
+            </tr>
+           
+            <!-- Existing rows removed for dynamic addition -->
+        </tbody>
+    </table>
+
+    <input type="password" id="password" placeholder="Enter your password">
+    <button id="addRowButton">Add Row</button>
+    <button id="saveButton">Save to database</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Wait for the DOM to be fully loaded
+
+    // Function to update duration in the corresponding <td> element
+    function updateDuration(audioId, durationId) {
+        var audio = document.getElementById(audioId);
+
+        // Update the corresponding <td> element with the duration
+        audio.addEventListener("loadedmetadata", function () {
+            document.getElementById(durationId).innerHTML = audio.duration.toFixed(2) + " seconds";
+        });
+    }
+
+    // Call the function for each audio element
+    updateDuration("myAudio1", "duration1");
+    updateDuration("audioPlayer", "duration2");
+    // Add similar calls for other audio elements if needed
+});
+        function saveDataToExcel() {
+   
+   const enteredPassword = document.getElementById('password').value; // Retrieve the password value
+
+   if (enteredPassword === "12345") {
+       const asrSolutionsDropdown = document.getElementById('asrSolution1');
+       const selectedValue = asrSolutionsDropdown.value;
+       const inputElement = document.getElementById('audioFile1');
+       const duration = document.getElementById('duration1').textContent;
+
+       const selectedFile = inputElement.files[0];
+       // Create a FormData object to send the data to the server
+       const formData = new FormData();
+       formData.append('asr_solutions', selectedValue);
+       formData.append('duration', duration);
+
+       // formData.append('audio_files', selectedFile);
+
+       // Send the form data to the server
+       fetch('/convert', {
+           method: 'POST',
+           body: formData
+       })
+       .then(response => response.json())
+       .then(data => {
+           if (data.success) {
+               alert('Data saved to Excel file!');
+           } else {
+               alert('Error saving data.');
+           }
+       })
+       .catch(error => {
+           console.error('Error:', error);
+           alert('Error occurred while saving data.');
+       });
+   } else {
+       alert("Password incorrect. Data not saved.");
+   }
+}
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const addRowButton = document.getElementById('addRowButton');
+            const saveButton = document.getElementById('saveButton');
+            const audioTableBody = document.getElementById('audioTableBody');
+
+            // Function to create a new row
+            function createNewRow() {
+                const newRow = document.createElement('tr');
+                // Construct the HTML for a new row
+                newRow.innerHTML = `
+                <td id="duration1">Duration: <span id="durationValue1">Sample Duration</span></td>
+                   
+                   <td >
+                      <audio id="audioPlayer" controls>
+                          <source src="{{ url_for('static', filename='m.mp3') }}" type="audio/mp3">
+                          Your browser does not support the audio element.
+                      </audio>
+             
+                  </td>
+  
+                  <td> <select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                          <!-- Add options as needed -->
+                          <option value="Option 1">Option 1</option>
+                          <option value="Option 2">Option 2</option>
+                          <option value="Option 3">Option 3</option>
+                      </select></td>
+                  <td>Transliteration Solutions 1</td>
+                  <td><input type="text" placeholder="Manual Correction" /></td>
+                  <td>Converted Text 1</td>
+                  <td><button onclick="runPunctuationModels('textArea1')">Run</button></td>
+                  <td>Punctuation Models 1</td>
+                  <td><input type="text" placeholder="Manual Correction Post Punctuation" /></td>
+                  <td>Transliteration 1</td>
+                  <td>Transliteration 1</td>
+                  <td><button onclick="runMTModels('textAreaMT1')">Run</button></td>
+                  <td>MT Solutions 1</td>
+                  <td><input type="text" placeholder="Manual Correction MT" /></td>
+                  <td><button onclick="runPunctuationModels2('textArea2')">Run</button></td>
+                  <td>Punctuation Models 2</td>
+                  <td><input type="text" placeholder="Manual Correction Post Punctuation 2" /></td>
+                  <td><button onclick="runTTS2()">Run</button></td>
+                  <td class="audio">
+                      <input type="file" accept="audio/*" id="audioFile1"
+                          onchange="updateDuration('audioFile1', 'duration1')" />
+                      <audio controls id="audioPlayer1">
+                          Your browser does not support the audio element.
+                      </audio>
+                      <button onclick="playAudio('audioFile1', 'audioPlayer1')">Play</button>
+                  </td>
+                  <td><input type="text" placeholder="Manual Correction" /></td>
+                  <td>Transliteration Solutions 1</td>
+                  <td>Transliteration Solutions 1</td>
+                  <td><select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                          
+                          <option value="Option 1">Option 1</option>
+                          <option value="Option 2">Option 2</option>
+                          <option value="Option 3">Option 3</option>
+                      </select></td>
+              
+              </tr>
+                    <!-- Add other cells as needed -->
+                `;
+                audioTableBody.appendChild(newRow);
+                // Update the event listeners for new elements in this row
+                addEventListenersToRow(newRow);
+            }
+
+            function updateDuration(audioId, durationId) {
+            var audio = document.getElementById(audioId);
+ 
+
+    // Update the corresponding <td> element with the duration
+    audio.addEventListener("loadedmetadata", function () {
+        document.getElementById(durationId).innerHTML = audio.duration.toFixed(2) + " seconds";
+    });
+}
+
+            // Function to handle adding event listeners to a newly created row
+            function addEventListenersToRow(row) {
+                const audioFileInput = row.querySelector('input[type="file"]');
+                const audioElement = row.querySelector('audio');
+                const playButton = row.querySelector('.playButton');
+
+                // Event listener for the file input to update duration
+                audioFileInput.addEventListener('change', function() {
+                    const durationCell = row.querySelector('.durationCell');
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        audioElement.src = e.target.result;
+                        audioElement.addEventListener('loadedmetadata', function() {
+                            durationCell.textContent = `Duration: ${audioElement.duration.toFixed(2)} seconds`;
+                        });
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                    
+                });
+
+                // Event listener for the play button
+                playButton.addEventListener('click', function() {
+                    audioElement.play();
+                });
+            }
+
+            // Event listener for the "Add Row" button
+            addRowButton.addEventListener('click', function() {
+                createNewRow();
+            });
+
+            // Event listener for the "Save" button
+            saveButton.addEventListener('click', function() {
+               
+            });
+        });
+      
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Audio Files</title>
+    <style>
+        #page1 input[type="submit"]{
+            margin-left:42% ;
+           cursor: pointer;
+           border-radius: 2px;
+           font-weight: bold;
+        }
+        /* Your CSS and other styles */
+        .audio audio {
+    width: 100%;
+    max-width: 300px; /* Adjust the maximum width as needed */
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    margin-bottom: 10px;
+}
+
+.audio button {
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.audio button:hover {
+    background-color: #45a049;
+}
+   #password{
+    margin-left: 40%;
+    margin-top:1%;
+    justify-content: center;
+    text-align: center;
+   }
+        #password,
+        #saveButton {
+            margin-bottom: 20px;
+            justify-content: space-between;
+            display: flex;
+        }
+
+        #saveButton {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display:flex;
+            justify-content: space-between;
+            margin-left: 41%;
+        }
+
+        #saveButton:hover {
+            background-color: #45a049;
+            margin-right:20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+       h1{
+        text-align: center;
+        justify-content: centre;
+
+        }
+        #pass{
+            margin-left: 40%;
+            margin-top: 1%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Assisted Hindi Speech to English Text System </h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>DURATION OF SENTENCE</th>
+                <th>HINDI AUDIO FILES</th>
+                <th>POSSIBLE HINDI ASR SOLUTIONS</th>
+                <th>POSSIBLE HINDI ASR SOLUTIONS IN TRANSLITERATION LETTERS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION</th>
+                <th>CONVERTED TEXT FROM TRANSLITERATION TO HINDI</th>
+                <th>BUTTON TO RUN PUNCTUATION MODELS </th>
+                <th>PUNCTUATION MODELS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION POST PUNCTUATION</th>
+                <th>TRANSLITERATION FROM LEFT BOX</th>
+                <th>TRANSLITERATION FROM LEFT BOX</th>
+                <th>BUTTON TO RUN MACHINE TRANSLATION MODELS</th>
+                <th>POSSIBLE HINDI TO ENGLISH MT SOLUTIONS</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION_MT</th>
+                <th>BUTTON TO RUN PUNCTUATION MODELS 2</th>
+                <th>PUNCTUATION MODELS 2</th>
+                <th>TEXT BOX FOR MANUAL CORRECTION POST PUNCTUATION 2</th>
+                <th>BUTTON FOR RUN TTS 2</th>
+                <th>ORITIGNAL HINDI AUDIO </th>
+                <th>FINAL HINDI TEXT </th>
+                <th>TRANSLITERATIO OF FINAL HINDI TEXT </th>
+                <th>FINAL ENGLISH TEXT </th>
+                <th>DROP DOWN BOX OF KIND OF SENTENCE</th>
+            </tr>
+        </thead>
+        <tbody id="audioTableBody">
+            
+        </tbody>
+
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/static/wav')  
+                .then(response => response.json())
+                .then(data => {
+                    const audioTableBody = document.getElementById('audioTableBody');
+                    data.audioFiles.forEach(audioFile => {
+                        const newRow = document.createElement('tr');
+                        newRow.innerHTML = `
+                           
+                            <td>${audioFile.duration} seconds</td>
+                            <td>
+                                <audio controls>
+                                    <source src="${audioFile.file}" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </td>
+                            <td> <select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                        
+                        <option value="Option 1">Option 1</option>
+                        <option value="Option 2">Option 2</option>
+                        <option value="Option 3">Option 3</option>
+                    </select></td>
+                <td></td>
+                <td><input type="text" placeholder="Manual Correction" /></td>
+                <td></td>
+                <td><button onclick="runPunctuationModels('textArea1')">Run</button></td>
+                <td>Punctuation Models 1</td>
+                <td><input type="text" placeholder="Manual Correction Post Punctuation" /></td>
+                <td>Transliteration 1</td>
+                <td>Transliteration 1</td>
+                <td><button onclick="runMTModels('textAreaMT1')">Run</button></td>
+                <td>MT Solutions 1</td>
+                <td><input type="text" placeholder="Manual Correction MT" /></td>
+                <td><button onclick="runPunctuationModels2('textArea2')">Run</button></td>
+                <td>Punctuation Models 2</td>
+                <td><input type="text" placeholder="Manual Correction Post Punctuation 2" /></td>
+                <td><button onclick="runTTS2()">Run</button></td>
+                <td class="audio">
+                    <audio controls>
+                                    <source src="${audioFile.file}" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                    
+                </td>
+                <td><input type="text" placeholder="Manual Correction" /></td>
+                <td>Transliteration Solutions 1</td>
+                <td>Transliteration Solutions 1</td>
+                <td><select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                        
+                        <option value="Option 1">Option 1</option>
+                        <option value="Option 2">Option 2</option>
+                        <option value="Option 3">Option 3</option>
+                    </select></td>
+            
+            </tr>
+
+
+
+
+
+
+
+                                       `;
+                        audioTableBody.appendChild(newRow);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching audio files:', error);
+                });
+        });
+    </script>
+</body>
+</html>

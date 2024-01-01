@@ -87,12 +87,17 @@
             text-align: center;
         }
     </style>
+   
 </head>
 <body>
-    <h1>AI Assisted Hindi Speech to English Text System </h1>
-    <table>
+    <h1 style="text-align: center; margin-top: 50px; position: relative;">AI Assisted Hindi Speech to English Text System</h1>
+
+
+    <table id="myTable">
+        
         <thead>
             <tr>
+                <th>Sr No.</th>
                 <th>DURATION OF SENTENCE</th>
                 <th>HINDI AUDIO FILES</th>
                 <th>POSSIBLE HINDI ASR SOLUTIONS</th>
@@ -121,27 +126,33 @@
         <tbody id="audioTableBody">
             
         </tbody>
-
     </table>
 
+    <button id="saveButton"  onclick="saveToDatabase()" >Save to CSV</button>
+
     <script>
+        function saveToDatabase() {
+         alert('Data saved to the database!');
+
+}
         document.addEventListener('DOMContentLoaded', function() {
             fetch('/static/wav')  
                 .then(response => response.json())
                 .then(data => {
                     const audioTableBody = document.getElementById('audioTableBody');
-                    data.audioFiles.forEach(audioFile => {
-                        const newRow = document.createElement('tr');
+            data.audioFiles.forEach((audioFile, index) => { // Modify here
+                const newRow = document.createElement('tr');
                         newRow.innerHTML = `
-                           
+                             <td>${index + 1}</td>
                             <td>${audioFile.duration} seconds</td>
+                            <td style="display:none;">${audioFile.file}</td>
                             <td>
                                 <audio controls>
                                     <source src="${audioFile.file}" type="audio/wav">
                                     Your browser does not support the audio element.
                                 </audio>
                             </td>
-                            <td> <select id="asrSolution1" onchange="handleASRSolutionSelection('asrSolution1')">
+                            <td> <select class="asrSolutionSelect" onchange="handleASRSolutionSelection('asrSolution1')">
                         
                         <option value="Option 1">Option 1</option>
                         <option value="Option 2">Option 2</option>
@@ -187,6 +198,53 @@
                 .catch(error => {
                     console.error('Error fetching audio files:', error);
                 });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener for the save button
+            document.getElementById('saveButton').addEventListener('click', function() {
+                // Extract table data and send it to the server for saving
+                const tableData = extractTableData('myTable');
+
+                fetch('/save-all-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ tableData: tableData })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result.message);
+                })
+                .catch(error => {
+                    console.error('Error saving table data:', error);
+                });
+            });
+
+            function extractTableData(tableId) {
+                // Function to extract data from the table
+                // Extract the data for each row and return it as an array of objects
+                const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+                const tableData = [];
+
+                rows.forEach(row => {
+                    const rowData = {};
+                    const cells = row.querySelectorAll('td');
+
+                    // Only retrieve data from visible columns
+
+                    rowData.duration = cells[1].innerText;
+                    rowData.audioPath = cells[2].innerText;
+                    const dropdown = row.querySelector('.asrSolutionSelect');
+                    rowData.asrSolution = dropdown.options[dropdown.selectedIndex].value;
+
+                    // You can fetch other columns similarly if needed
+
+                    tableData.push(rowData);
+                });
+
+                return tableData;
+            }
         });
     </script>
 </body>

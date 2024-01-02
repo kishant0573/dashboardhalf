@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, jsonify, request
 import csv
 import os
 import wave
@@ -37,13 +37,29 @@ def save_all_data():
 
     table_data = data.get('tableData', [])
 
-    headers = table_data[0].keys() if table_data else []
+    if not table_data:
+        return jsonify({'success': False, 'message': 'No data to save.'})
 
-    with open('blank.csv', 'w', newline='') as file:  # Change the file name to 'black.csv'
-        writer = csv.DictWriter(file, fieldnames=headers)
-        writer.writeheader()
-        writer.writerows(table_data)
-    return jsonify({'success': True, 'message': 'Data saved to black.csv file successfully!'})
+    # Ensure the audioPath key exists in the tableData
+    if 'audioPath' not in table_data[0]:
+        return jsonify({'success': False, 'message': 'Audio file path missing or incorrect structure.'})
+
+    try:
+        audio_path = table_data[0]['audioPath']
+        file_name = os.path.basename(audio_path).replace('.wav', '.csv')
+
+        csv_filename = os.path.join(os.getcwd(), file_name)
+
+        headers = table_data[0].keys()
+
+        with open(csv_filename, 'w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+            writer.writerows(table_data)
+        
+        return jsonify({'success': True, 'message': f'Data saved to {csv_filename} successfully!'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Error saving data: {e}'})
 
 if __name__ == '__main__':
     app.run(debug=True)

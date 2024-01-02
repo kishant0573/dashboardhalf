@@ -91,6 +91,8 @@
 </head>
 <body>
     <h1 style="text-align: center; margin-top: 50px; position: relative;">AI Assisted Hindi Speech to English Text System</h1>
+    <input type="file" id="folderInput" webkitdirectory directory multiple>
+
 
 
     <table id="myTable">
@@ -100,12 +102,12 @@
                 <th>Sr No.</th>
                 <th>DURATION OF SENTENCE</th>
                 <th>HINDI AUDIO FILES</th>
-                <th>POSSIBLE HINDI ASR SOLUTIONS</th>
-                <th>POSSIBLE HINDI ASR SOLUTIONS IN TRANSLITERATION LETTERS</th>
-                <th>TEXT BOX FOR MANUAL CORRECTION</th>
-                <th>CONVERTED TEXT FROM TRANSLITERATION TO HINDI</th>
+                <th>POSSIBLE_HINDI_ASR_SOLUTIONS</th>
+                <th>  POSSIBLE_HINDI_ASR_SOLUTIONS_IN_TRANSLITERATION_LETTERS</th>
+                <th>TEXT_BOX_FOR_MANUAL_CORRECTION</th>
+                <th>CONVERTED_TEXT_FROM_TRANSLITERATION_TO_HINDI</th>
                 <th>BUTTON TO RUN PUNCTUATION MODELS </th>
-                <th>PUNCTUATION MODELS</th>
+                <th>PUNCTUATION_MODELS</th>
                 <th>TEXT BOX FOR MANUAL CORRECTION POST PUNCTUATION</th>
                 <th>TRANSLITERATION FROM LEFT BOX</th>
                 <th>TRANSLITERATION FROM LEFT BOX</th>
@@ -120,7 +122,7 @@
                 <th>FINAL HINDI TEXT </th>
                 <th>TRANSLITERATIO OF FINAL HINDI TEXT </th>
                 <th>FINAL ENGLISH TEXT </th>
-                <th>DROP DOWN BOX OF KIND OF SENTENCE</th>
+                <!-- <th>DROP DOWN BOX OF KIND OF SENTENCE</th> -->
             </tr>
         </thead>
         <tbody id="audioTableBody">
@@ -142,6 +144,7 @@
                     const audioTableBody = document.getElementById('audioTableBody');
             data.audioFiles.forEach((audioFile, index) => { // Modify here
                 const newRow = document.createElement('tr');
+                let rowIndex = 1;
                         newRow.innerHTML = `
                              <td>${index + 1}</td>
                             <td>${audioFile.duration} seconds</td>
@@ -151,7 +154,7 @@
                                     <source src="${audioFile.file}" type="audio/wav">
                                     Your browser does not support the audio element.
                                 </audio>
-                            </td>
+                            </td>                                                                                                                                                                                                                                                                                                                                                                                                                                            
                             <td> <select class="asrSolutionSelect" onchange="handleASRSolutionSelection('asrSolution1')">
                         
                         <option value="Option 1">Option 1</option>
@@ -161,13 +164,14 @@
                 <td></td>
                 <td><input type="text" placeholder="Manual Correction" /></td>
                 <td></td>
-                <td><button onclick="runPunctuationModels('textArea1')">Run</button></td>
-                <td>Punctuation Models 1</td>
+                <td><button onclick="runPunctuationModels(this)">Run</button></td>
+               <td class="puncColumn">Punctuation Models</td>
+               
                 <td><input type="text" placeholder="Manual Correction Post Punctuation" /></td>
                 <td>Transliteration 1</td>
-                <td>Transliteration 1</td>
-                <td><button onclick="runMTModels('textAreaMT1')">Run</button></td>
-                <td>MT Solutions 1</td>
+                
+                <td><button onclick="runMTModels(this)">Run</button></td>
+<td class="mtColumn">MT Solutions</td>
                 <td><input type="text" placeholder="Manual Correction MT" /></td>
                 <td><button onclick="runPunctuationModels2('textArea2')">Run</button></td>
                 <td>Punctuation Models 2</td>
@@ -189,16 +193,55 @@
                         <option value="Option 2">Option 2</option>
                         <option value="Option 3">Option 3</option>
                     </select></td>
-            
+                
+               
             </tr>
                                        `;
                         audioTableBody.appendChild(newRow);
+                        rowIndex++;
                     });
                 })
                 .catch(error => {
                     console.error('Error fetching audio files:', error);
                 });
         });
+        function runMTModels(button) {
+    const row = button.parentNode.parentNode; // Get the row
+    const mtText = row.querySelector('.mtColumn'); // Find the MT Solutions column
+    const index = Array.from(row.parentNode.children).indexOf(row) + 1; // Get the index of the row
+
+    if (mtText) {
+        mtText.textContent = `MT Solutions ${index} Completed`;
+    } else {
+        console.error(`Element with class 'mtColumn' not found in row ${index}.`);
+    }
+    // Perform other actions as needed for each row's MT Solutions
+}
+
+        function runPunctuationModels(button) {
+        const row = button.parentNode.parentNode; // Get the row
+        const puncText = row.querySelector('.puncColumn'); // Find the Punctuation Models column
+        const index = Array.from(row.parentNode.children).indexOf(row) + 1; // Get the index of the row
+
+        if (puncText) {
+            puncText.textContent = `Punctuation Models ${index} Completed`;
+        } else {
+            console.error(`Element with class 'puncColumn' not found in row ${index}.`);
+        }
+        // Perform other actions as needed for each row's Punctuation Models
+    }
+        function runPunctuationModels2(textAreaId) {
+            const row = button.parentNode.parentNode; // Get the row
+        const puncText = row.querySelector('.puncColumn'); // Find the Punctuation Models column
+        const index = Array.from(row.parentNode.children).indexOf(row) + 1; // Get the index of the row
+
+        if (puncText) {
+            puncText.textContent = `Punctuation Models ${index} Completed`;
+        } else {
+            console.error(`Element with class 'puncColumn' not found in row ${index}.`);
+        }
+        // Perform other actions as needed for each row's Punctuation Models
+    }
         document.addEventListener('DOMContentLoaded', function() {
             // Event listener for the save button
             document.getElementById('saveButton').addEventListener('click', function() {
@@ -236,10 +279,15 @@
                     rowData.duration = cells[1].innerText;
                     rowData.audioPath = cells[2].innerText;
                     const dropdown = row.querySelector('.asrSolutionSelect');
-                    rowData.asrSolution = dropdown.options[dropdown.selectedIndex].value;
-
-                    // You can fetch other columns similarly if needed
-
+                    const options = Array.from(dropdown.options).map(option => option.value);
+        rowData.asrSolution = options.join(', '); 
+                    rowData.POSSIBLE_HINDI_ASR_SOLUTIONS= cells[4].innerText;
+                    rowData.POSSIBLE_HINDI_ASR_SOLUTIONS_IN_TRANSLITERATION_LETTERS = cells[5].innerText;
+                    rowData.TEXT_BOX_FOR_MANUAL_CORRECTION = cells[5].innerText;
+                    rowData.CONVERTED_TEXT_FROM_TRANSLITERATION_TO_HINDI = cells[6].innerText;
+                    rowData.PUNCTUATION_MODELS = cells[7].innerText;
+                    
+                   
                     tableData.push(rowData);
                 });
 
